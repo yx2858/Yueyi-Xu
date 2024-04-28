@@ -1,5 +1,8 @@
 ---
 title: "Predicting Mortality Status in Patients with Breast Cancer Based on Multiple Approaches"
+output:
+  html_document:
+    mathjax: default
 author: "Jixin Li, Yueyi Xu, Peng Su, Tianhui Huang"
 date: "2023-12-11"
 excerpt: For my Biostatistical Method I class, my group used Logistic Regression, Survival Analysis, Decision Tree, and Random Forest to predict mortality status in patients with breat cancer.
