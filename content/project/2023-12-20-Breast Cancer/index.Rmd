@@ -1,8 +1,5 @@
 ---
 title: "Predicting Mortality Status in Patients with Breast Cancer Based on Multiple Approaches"
-output:
-  html_document:
-    mathjax: default
 author: "Jixin Li, Yueyi Xu, Peng Su, Tianhui Huang"
 date: "2023-12-11"
 excerpt: For my Biostatistical Method I class, my group used Logistic Regression, Survival Analysis, Decision Tree, and Random Forest to predict mortality status in patients with breat cancer.
@@ -29,7 +26,6 @@ library(party)
 library(magrittr)
 library(rpart)
 library(knitr)
-library(rmarkdown)
 ```
 
 <!--# logistic Regression-->
@@ -365,7 +361,7 @@ Testing =
 ```
 
 
-```{r message=FALSE, warning=FALSE, echo = F}
+```{r message=FALSE, warning=FALSE, include = F}
 #model building and assumption test
 set.seed(97)
 cox_model <- coxph(Surv(survival_months, status) ~ . + t_stage*n_stage + 
@@ -382,8 +378,9 @@ plot(cox_zph_result[8], ylab = "residuals of a_stage")
 plot(cox_zph_result[10], ylab = "residuals of estrogen_status")
 plot(cox_zph_result[11], ylab = "residuals of progesterone_status")
 plot(cox_zph_result[15], ylab = " estrogen_status:progesterone_status")
+```
 
-
+```{r, include = F}
 cox_model_ass <- coxph(Surv(survival_months, status) ~ . - a_stage - estrogen_status - progesterone_status + t_stage*n_stage + 
                      tumor_size*regional_node_examined, data = Training)
 
@@ -395,7 +392,9 @@ step(cox_model_ass, direction =  "backward")
 cox_model_final <- coxph(Surv(survival_months, status) ~ age + race + 
     marital_status + t_stage + n_stage + differentiate + regional_node_examined + 
     reginol_node_positive, data = Training)
+```
   
+```{r, echo = F}
 as.data.frame(coef(summary(cox_model_final))) |>
   arrange(`Pr(>|z|)`) |>
   knitr::kable(col.names = c("term","coef", "exp(coef)" , "se(coef)","z", "Pr(>z)"),digits = 4)
@@ -409,7 +408,7 @@ cat("Accuracy", accuracy, "\n")
 ```
 
 
-```{r, echo = F}
+```{r, include = F}
 #for race accuracy
 #all race
 fold_test <- Testing
@@ -435,7 +434,9 @@ fold_train_b <- Training |> filter(race != "White")
 fold_pre_b <- cox_model_final 
 fold_predict_b <- predict(fold_pre_b,type='lp',newdata=fold_test_b)
 roc3<-roc(fold_test_b$status,fold_predict_b)
+```
 
+```{r, echo = F}
 #ROC plot
 plot(roc1, col = "blue", main = "Receiver Operating Characteristic (ROC) Curve", 
      lwd = 2, lty = 1,print.auc=T)
@@ -444,21 +445,29 @@ lines(roc2, col = "red", lwd = 2, lty = 2)
 lines(roc3, col = "orange", lwd = 2, lty = 3)
 legend("bottomright", legend = c("Main model", "White", "Black and Others"),
        col = c("blue", "red", "orange"), lty = c(1, 2, 3), lwd = 2)
+```
 
-
+```{r, include = F}
 #accuracy for white
 predicted_classes_w <- ifelse(fold_predict_w > 0.5, 1, 0)
 accuracy_w <- mean(predicted_classes_w == fold_test_w$status)
-cat("Accuracy white", accuracy_w, "\n")
-
-#accuracy for black
-predicted_classes_b <- ifelse(fold_predict_b > 0.5, 1, 0)
-accuracy_b <- mean(predicted_classes_b == fold_test_b$status)
-cat("Accuracy black", accuracy_b, "\n")
-
 ```
 
 ```{r, echo = F}
+cat("Accuracy white", accuracy_w, "\n")
+```
+
+```{r, include = F}
+#accuracy for black
+predicted_classes_b <- ifelse(fold_predict_b > 0.5, 1, 0)
+accuracy_b <- mean(predicted_classes_b == fold_test_b$status)
+```
+
+```{r, echo = F}
+cat("Accuracy black", accuracy_b, "\n")
+```
+
+```{r, include = F}
 #adjusted model
 weights <- ifelse(Training$race == "White", 1, 5)
 
@@ -470,12 +479,15 @@ cox_model_weighted <- coxph(Surv(survival_months, status) ~ age + race +
 #accuracy of the adjusted model
 predicted_classes <- ifelse(predict(cox_model_weighted,type='lp',newdata=Testing) > 0.5, 1, 0)
 accuracy <- mean(predicted_classes == Testing$status)
+```
+
+```{r, echo = F}
 cat("Accuracy", accuracy, "\n")
 ```
 
 
 
-```{r, echo = F}
+```{r, include = F}
 #ROC again
 #for race
 
@@ -502,22 +514,34 @@ fold_train_b <- Training |> filter(race != "White")
 fold_pre_b <- cox_model_weighted 
 fold_predict_b <- predict(fold_pre_b,type='lp',newdata=fold_test_b)
 roc3<-roc(fold_test_b$status,fold_predict_b)
+```
 
+```{r, echo = F}
 #plot
 plot(roc1, col = "blue", main = "Receiver Operating Characteristic (ROC) Curve", 
      lwd = 2, lty = 1,print.auc=T)
 
 lines(roc2, col = "red", lwd = 2, lty = 2)
 lines(roc3, col = "orange", lwd = 2, lty = 3)
+```
 
+```{r, include = F}
 #accuracy for white
 predicted_classes_w <- ifelse(fold_predict_w > 0.5, 1, 0)
 accuracy_w <- mean(predicted_classes_w == fold_test_w$status)
-cat("Accuracy", accuracy_w, "\n")
+```
 
+```{r, echo = F}
+cat("Accuracy", accuracy_w, "\n")
+```
+
+```{r, include = F}
 #accuracy for black
 predicted_classes_b <- ifelse(fold_predict_b > 0.5, 1, 0)
 accuracy_b <- mean(predicted_classes_b == fold_test_b$status)
+```
+
+```{r, echo = F}
 cat("Accuracy", accuracy_b, "\n")
 ```
 
@@ -565,7 +589,7 @@ The decision tree is an algorithm for solving classification problems, and the m
 
 
 ## Decision Tree
-```{r message=FALSE, warning=FALSE, echo = F}
+```{r message=FALSE, warning=FALSE, include = F}
 set.seed(2)
 # Decision Tree Model
 dt_model <- rpart(Status ~ ., data = BC_train, method = "class")
@@ -573,8 +597,13 @@ dt_model <- rpart(Status ~ ., data = BC_train, method = "class")
 # Plot Decision Tree 
 library(rpart)
 library(rpart.plot)
-rpart.plot(dt_model,type=2)
+```
 
+```{r, echo = F}
+rpart.plot(dt_model,type=2)
+```
+
+```{r, include = F}
 # Examine the complexity plot
 printcp(dt_model)
 BC_test$pred_base  <- predict(dt_model, BC_test, type = "class")
@@ -596,7 +625,7 @@ Random forest is a model composed of many independent decision trees, used for c
 
 
 ## Random Forest Model
-```{r, echo = F}
+```{r, include = F}
 # Setting seed
 set.seed(120)
 
@@ -697,6 +726,9 @@ accuracy <- c(rf_accuracy_5,rf_accuracy_6,rf_accuracy_7,rf_accuracy_8,rf_accurac
 library(ggplot2)
 df <- data.frame(x = 5:12, y =c(rf_accuracy_5,rf_accuracy_6,rf_accuracy_7,rf_accuracy_8,
                                 rf_accuracy_9,rf_accuracy_10,rf_accuracy_11,rf_accuracy_12))
+```
+
+```{r, echo = F}
 # Create a line plot using ggplot2
 ggplot(df, aes(x, y)) +
   geom_line(color = "#4CAF50", size = 2) +
@@ -708,7 +740,7 @@ ggplot(df, aes(x, y)) +
         axis.title = element_text(size = 14))
 ```
 
-```{r message=FALSE, warning=FALSE, echo = F}
+```{r message=FALSE, warning=FALSE, include = F}
 # Predicting the Test set results
 y_pred_11 = predict(classifier_RF_11, newdata = BC_test[-16])
 rf_accuracy_11 <- mean(y_pred_11 == BC_test$Status) # Accuracy = 89.4277%
@@ -717,14 +749,19 @@ rf_accuracy_11 <- mean(y_pred_11 == BC_test$Status) # Accuracy = 89.4277%
 confusion_mtx = table(BC_test[,16], y_pred_11)
 confusion_mtx
 max(confusion_mtx)
+```
 
+```{r, echo = F}
 # Plotting model
 plot(classifier_RF_11)
+```
 
-
+```{r, include = F}
 # Importance plot
 importance(classifier_RF_11)
-  
+```
+
+```{r, echo = F}
 # Variable importance plot
 varImpPlot(classifier_RF_11)
 ```
@@ -734,7 +771,7 @@ The accuracy of random forest model = 89.43%
 
 
 <!--## Access the accuracy of white and black-->
-```{r message=FALSE, warning=FALSE, echo = F}
+```{r message=FALSE, warning=FALSE, include = F}
 ## Extract testing data based on different race levels
 Test_White <- subset(BC_test, Race == "White")
 Test_Black <- subset(BC_test, Race == "Black")
@@ -824,6 +861,7 @@ Generally, four models are used to predict the status of breast cancer patients.
 ## Reference
 
 [1]	Loibl, Sibylle et al. “Breast cancer.” Lancet (London, England) vol. 397,10286 (2021): 1750-1769. doi:10.1016/S0140-6736(20)32381-3
+
 [2]	Arnold, Melina et al. “Current and future burden of breast cancer: Global statistics for 2020 and 2040.” Breast (Edinburgh, Scotland) vol. 66 (2022): 15-23. doi:10.1016/j.breast.2022.08.010
 
 
