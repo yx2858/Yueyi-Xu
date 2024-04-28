@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=4321&amp;path=livereload" data-no-instant defer></script>
+  
+                           
+     
+
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.125.4">
+<title>Predicting Mortality Status in Patients with Breast Cancer Based on Multiple Approaches | Yueyi Xu</title>
+
+
+
+
+
+
+
+
+  
+    
+  
+<meta name="description" content="Aspiring Biostatistician">
+
+
+<meta property="og:site_name" content="Yueyi Xu">
+<meta property="og:title" content="Predicting Mortality Status in Patients with Breast Cancer Based on Multiple Approaches | Yueyi Xu">
+<meta property="og:description" content="Aspiring Biostatistician" />
+<meta property="og:type" content="page" />
+<meta property="og:url" content="http://localhost:4321/project/2023-12-20-breast-cancer/" />
+<meta property="og:locale" content="en">
+
+
+
+
+    
+        <meta property="og:image" content="http://localhost:4321/project/2023-12-20-breast-cancer/featured.png" >
+        <meta property="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="http://localhost:4321/project/2023-12-20-breast-cancer/featured.png" >
+    
+    
+  
+  <meta itemprop="name" content="Predicting Mortality Status in Patients with Breast Cancer Based on Multiple Approaches">
+  <meta itemprop="description" content="logistic Regression clean data Abstract Abstract. This study evaluates the predictive performance of four methods—logistic regression, survival analysis, decision tree, and random forest—in determining the status of breast cancer patients. The results indicate that random forest exhibits the highest prediction accuracy, reaching 89.59%. Additionally, although variations in accuracy exist among the models, there are minimal differences in accuracy within each model when predicting outcomes for both white and black individuals.">
+  <meta itemprop="datePublished" content="2023-12-11T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2023-12-11T00:00:00+00:00">
+  <meta itemprop="wordCount" content="5620">
+  <meta itemprop="image" content="http://localhost:4321/project/2023-12-20-breast-cancer/featured.png">
+  
+  
+
+
+  <!--[if IE]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+  
+  
+  <link rel="stylesheet" href="/style.main.min.a66a1f286f9f1a3656685065923594f7738d6f2fe5f9550cccd1bbe6610fd95d.css" integrity="sha256-pmofKG&#43;fGjZWaFBlkjWU93ONby/l&#43;VUMzNG75mEP2V0=" media="screen">
+  
+  
+  <script src="/panelset.min.ed1ac24b6e16f4e2481e3d1d098ae66f5bc77438aef619e6e266d8ac5b00dc72.js" type="text/javascript"></script>
+  
+  
+  <script src="/main.min.386b2981ed3dced1753a827101cf0152ea83506d02de521d1ad633373dee4776.js" type="text/javascript"></script>
+</head>
+<body>
+      <div class="grid-container">
+<header class="site-header pt4 pb2 mb4 bb b--transparent ph5 headroom z-max" role="banner">
+  <nav class="site-nav db dt-l w-100" role="navigation">
+    <a class="site-brand db dtc-l v-mid link no-underline w-100 w-33-l tc tl-l" href="http://localhost:4321/" title="Home">
+      <img src="/img/blogophonic-mark-dark.png" class="dib db-l h2 w-auto" alt="Yueyi Xu">
+    </a>
+    <div class="site-links db dtc-l v-mid w-100 w-47-l tc tr-l mt3 mt0-l ttu tracked">
+      
+        
+        
+        
+      <a class="link f6 f5-l dib pv1 ph2 " href="/about/" title="About Blogophonic">About</a>
+      
+        
+        
+        
+      <a class="link f6 f5-l dib pv1 ph2 " href="/blog/" title="Blog">Blog</a>
+      
+        
+        
+        
+      <a class="link f6 f5-l dib pv1 ph2 active" href="/project/" title="Project Portfolio">Projects</a>
+      
+      
+    </div>
+  </nav>
+</header>
+
+<main class="page-main pa4" role="main">
+  <section class="page-content mw7 center">
+    <article class="post-content pa0 ph4-l">
+      <header class="post-header">
+        <h1 class="f1 lh-solid measure-narrow mb3 fw4">Predicting Mortality Status in Patients with Breast Cancer Based on Multiple Approaches</h1>
+        
+        <p class="f6 measure lh-copy mv1">By Jixin Li, Yueyi Xu, Peng Su, Tianhui Huang</p>
+        <p class="f7 db mv0 ttu">December 11, 2023</p>
+
+      
+
+      </header>
+      <section class="post-body pt5 pb4">
+        
+
+
+
+<h1 id="logistic-regression">logistic Regression
+  <a href="#logistic-regression"></a>
+</h1>
+
+
+
+
+<h2 id="clean-data">clean data
+  <a href="#clean-data"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="abstract">Abstract
+  <a href="#abstract"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<p>Abstract. This study evaluates the predictive performance of four methods—logistic regression, survival analysis, decision tree, and random forest—in determining the status of breast cancer patients. The results indicate that random forest exhibits the highest prediction accuracy, reaching 89.59%. Additionally, although variations in accuracy exist among the models, there are minimal differences in accuracy within each model when predicting outcomes for both white and black individuals.</p>
+
+
+
+
+<h2 id="introduction">Introduction
+  <a href="#introduction"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<p>Breast cancer is the most common cancer in women and the second leading cause of cancer death in women in the World [1]. In recent years, the incidence of breast cancer has been on the rise, and approximately 685,000 women in the world die from breast cancer every year [2]. Therefore, it is crucial to effectively predict the death status of breast cancer patients. This study uses four methods to predict the death status of breast cancer patients. The second section outlines the steps and algorithms of each method. The third section presents the fitted model and its accuracy, and the fourth section compares and summarizes the results.</p>
+
+
+
+
+<h2 id="methods">Methods
+  <a href="#methods"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="logistics-regression">Logistics Regression
+  <a href="#logistics-regression"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>The first method is intended to conduct a series of logistic regression analyses and explore the interaction between different variables. The process begins by loading the training dataset and converting the status variable to binary numbers. After diagnosing assumptions, variables demonstrating multicollinearity are omitted, and two outliers are removed, a new dataset called “trainOut” is created. Then the logistic regression is fitted (“new_model”) and the first round of feature selection is performed to select the most relevant variables. After that, the most significant interaction is evaluated and added to the model, called “best_fit”. Finally, the second round feature selection is performed on the model with interaction effect and the final model is obtained, called “best_fit2”. The accuracy of best_fit2 is then predicted by applying it to the testing dataset. Lastly, separate accuracy predictions are then carried out for each of these racial categories (white / black) to evaluate potential variations in model performance.</p>
+
+
+
+
+<h2 id="fit-a-logistic-regression-model">fit a logistic regression model
+  <a href="#fit-a-logistic-regression-model"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="check-for-assumptions-for-logistic-regression-model">check for assumptions for logistic regression model
+  <a href="#check-for-assumptions-for-logistic-regression-model"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="fit-a-new-logistic-regression-model">fit a new logistic regression model
+  <a href="#fit-a-new-logistic-regression-model"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="interaction">interaction
+  <a href="#interaction"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="significant-interaction">significant interaction
+  <a href="#significant-interaction"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="model-selection">model selection
+  <a href="#model-selection"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#900;font-weight:bold">step</span>(new_model, direction<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;both&#39;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Start:  AIC=1102.76
+## status ~ age + race + marital_status + t_stage + differentiate + 
+##     grade + a_stage + tumor_size + estrogen_status + progesterone_status + 
+##     regional_node_examined + reginol_node_positive + survival_months
+## 
+## 
+## Step:  AIC=1102.76
+## status ~ age + race + marital_status + t_stage + differentiate + 
+##     a_stage + tumor_size + estrogen_status + progesterone_status + 
+##     regional_node_examined + reginol_node_positive + survival_months
+## 
+##                          Df Deviance    AIC
+## - marital_status          4   237.86 1100.4
+## - tumor_size              1   237.37 1100.8
+## - a_stage                 1   237.48 1102.0
+## &lt;none&gt;                        237.37 1102.8
+## - race                    2   237.76 1103.3
+## - t_stage                 3   238.64 1111.6
+## - age                     1   238.34 1112.0
+## - estrogen_status         1   238.42 1113.0
+## - regional_node_examined  1   238.72 1116.5
+## - progesterone_status     1   238.83 1117.8
+## - differentiate           3   239.31 1119.3
+## - reginol_node_positive   1   246.56 1205.7
+## - survival_months         1   298.90 1737.8
+## 
+## Step:  AIC=1100.43
+## status ~ age + race + t_stage + differentiate + a_stage + tumor_size + 
+##     estrogen_status + progesterone_status + regional_node_examined + 
+##     reginol_node_positive + survival_months
+## 
+##                          Df Deviance    AIC
+## - tumor_size              1   237.86 1098.4
+## - a_stage                 1   237.96 1099.6
+## &lt;none&gt;                        237.86 1100.4
+## - race                    2   238.37 1102.4
+## + marital_status          4   237.37 1102.8
+## - t_stage                 3   239.13 1109.2
+## - estrogen_status         1   238.90 1110.6
+## - age                     1   239.04 1112.2
+## - regional_node_examined  1   239.22 1114.2
+## - progesterone_status     1   239.37 1116.0
+## - differentiate           3   239.77 1116.6
+## - reginol_node_positive   1   247.25 1205.5
+## - survival_months         1   300.08 1740.8
+## 
+## Step:  AIC=1098.44
+## status ~ age + race + t_stage + differentiate + a_stage + estrogen_status + 
+##     progesterone_status + regional_node_examined + reginol_node_positive + 
+##     survival_months
+## 
+##                          Df Deviance    AIC
+## - a_stage                 1   237.96 1097.7
+## &lt;none&gt;                        237.86 1098.4
+## - race                    2   238.37 1100.4
+## + tumor_size              1   237.86 1100.4
+## + marital_status          4   237.37 1100.8
+## - estrogen_status         1   238.91 1108.6
+## - age                     1   239.04 1110.2
+## - regional_node_examined  1   239.22 1112.3
+## - progesterone_status     1   239.37 1114.0
+## - differentiate           3   239.77 1114.6
+## - t_stage                 3   239.84 1115.4
+## - reginol_node_positive   1   247.32 1204.3
+## - survival_months         1   300.09 1738.8
+## 
+## Step:  AIC=1097.65
+## status ~ age + race + t_stage + differentiate + estrogen_status + 
+##     progesterone_status + regional_node_examined + reginol_node_positive + 
+##     survival_months
+## 
+##                          Df Deviance    AIC
+## &lt;none&gt;                        237.96 1097.7
+## + a_stage                 1   237.86 1098.4
+## - race                    2   238.47 1099.5
+## + tumor_size              1   237.96 1099.6
+## + marital_status          4   237.48 1100.0
+## - estrogen_status         1   239.00 1107.7
+## - age                     1   239.16 1109.5
+## - regional_node_examined  1   239.32 1111.4
+## - progesterone_status     1   239.47 1113.1
+## - t_stage                 3   239.85 1113.5
+## - differentiate           3   239.88 1113.9
+## - reginol_node_positive   1   247.40 1203.1
+## - survival_months         1   300.10 1737.0
+</code></pre><pre tabindex="0"><code>## 
+## Call:  glm(formula = status ~ age + race + t_stage + differentiate + 
+##     estrogen_status + progesterone_status + regional_node_examined + 
+##     reginol_node_positive + survival_months, data = trainOut)
+## 
+## Coefficients:
+##                        (Intercept)                                 age  
+##                           0.345447                           -0.002348  
+##                          raceOther                           raceWhite  
+##                           0.066339                            0.048990  
+##                          t_stageT2                           t_stageT3  
+##                          -0.028504                           -0.046781  
+##                          t_stageT4  differentiatePoorly differentiated  
+##                          -0.153940                           -0.040331  
+##      differentiateUndifferentiated    differentiateWell differentiated  
+##                          -0.182304                            0.042523  
+##            estrogen_statusPositive         progesterone_statusPositive  
+##                           0.098487                            0.071924  
+##             regional_node_examined               reginol_node_positive  
+##                           0.003032                           -0.013269  
+##                    survival_months  
+##                           0.006634  
+## 
+## Degrees of Freedom: 2763 Total (i.e. Null);  2749 Residual
+## Null Deviance:	    343.5 
+## Residual Deviance: 238 	AIC: 1098
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>best_fit <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">glm</span>(formula <span style="color:#000;font-weight:bold">=</span> status <span style="color:#000;font-weight:bold">~</span> age <span style="color:#000;font-weight:bold">+</span> race <span style="color:#000;font-weight:bold">+</span> t_stage <span style="color:#000;font-weight:bold">+</span> differentiate <span style="color:#000;font-weight:bold">+</span> 
+</span></span><span style="display:flex;"><span>    estrogen_status <span style="color:#000;font-weight:bold">+</span> progesterone_status <span style="color:#000;font-weight:bold">+</span> regional_node_examined <span style="color:#000;font-weight:bold">+</span> 
+</span></span><span style="display:flex;"><span>    reginol_node_positive <span style="color:#000;font-weight:bold">+</span> survival_months<span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>      t_stage<span style="color:#000;font-weight:bold">:</span>regional_node_examined<span style="color:#000;font-weight:bold">+</span>t_stage<span style="color:#000;font-weight:bold">:</span>estrogen_status<span style="color:#000;font-weight:bold">+</span>race<span style="color:#000;font-weight:bold">:</span>survival_months<span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>      t_stage<span style="color:#000;font-weight:bold">:</span>survival_months<span style="color:#000;font-weight:bold">+</span>differentiate<span style="color:#000;font-weight:bold">:</span>progesterone_status<span style="color:#000;font-weight:bold">+</span>differentiate<span style="color:#000;font-weight:bold">:</span>survival_months<span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>      estrogen_status<span style="color:#000;font-weight:bold">:</span>survival_months<span style="color:#000;font-weight:bold">+</span>progesterone_status<span style="color:#000;font-weight:bold">:</span>survival_months<span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>      reginol_node_positive<span style="color:#000;font-weight:bold">:</span>survival_months, data <span style="color:#000;font-weight:bold">=</span> trainOut)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">summary</span>(best_fit)
+</span></span></code></pre></div><pre tabindex="0"><code>## 
+## Call:
+## glm(formula = status ~ age + race + t_stage + differentiate + 
+##     estrogen_status + progesterone_status + regional_node_examined + 
+##     reginol_node_positive + survival_months + t_stage:regional_node_examined + 
+##     t_stage:estrogen_status + race:survival_months + t_stage:survival_months + 
+##     differentiate:progesterone_status + differentiate:survival_months + 
+##     estrogen_status:survival_months + progesterone_status:survival_months + 
+##     reginol_node_positive:survival_months, data = trainOut)
+## 
+## Coefficients:
+##                                                                  Estimate
+## (Intercept)                                                     2.100e-01
+## age                                                            -2.239e-03
+## raceOther                                                       2.892e-01
+## raceWhite                                                       2.189e-01
+## t_stageT2                                                      -2.048e-01
+## t_stageT3                                                      -3.069e-01
+## t_stageT4                                                      -3.812e-01
+## differentiatePoorly differentiated                             -6.814e-02
+## differentiateUndifferentiated                                  -5.796e-01
+## differentiateWell differentiated                                3.311e-01
+## estrogen_statusPositive                                         5.195e-03
+## progesterone_statusPositive                                     3.637e-01
+## regional_node_examined                                          3.014e-03
+## reginol_node_positive                                          -2.633e-02
+## survival_months                                                 9.509e-03
+## t_stageT2:regional_node_examined                               -2.893e-04
+## t_stageT3:regional_node_examined                               -1.762e-03
+## t_stageT4:regional_node_examined                                5.212e-03
+## t_stageT2:estrogen_statusPositive                               4.543e-02
+## t_stageT3:estrogen_statusPositive                               1.448e-01
+## t_stageT4:estrogen_statusPositive                               1.558e-02
+## raceOther:survival_months                                      -3.245e-03
+## raceWhite:survival_months                                      -2.521e-03
+## t_stageT2:survival_months                                       1.866e-03
+## t_stageT3:survival_months                                       2.054e-03
+## t_stageT4:survival_months                                       1.824e-03
+## differentiatePoorly differentiated:progesterone_statusPositive -7.773e-02
+## differentiateUndifferentiated:progesterone_statusPositive       7.310e-02
+## differentiateWell differentiated:progesterone_statusPositive   -5.656e-02
+## differentiatePoorly differentiated:survival_months              1.278e-03
+## differentiateUndifferentiated:survival_months                   4.820e-03
+## differentiateWell differentiated:survival_months               -3.228e-03
+## estrogen_statusPositive:survival_months                         2.459e-05
+## progesterone_statusPositive:survival_months                    -3.675e-03
+## reginol_node_positive:survival_months                           2.011e-04
+##                                                                Std. Error
+## (Intercept)                                                     1.063e-01
+## age                                                             6.155e-04
+## raceOther                                                       9.133e-02
+## raceWhite                                                       6.470e-02
+## t_stageT2                                                       7.114e-02
+## t_stageT3                                                       8.998e-02
+## t_stageT4                                                       1.391e-01
+## differentiatePoorly differentiated                              4.894e-02
+## differentiateUndifferentiated                                   2.533e-01
+## differentiateWell differentiated                                8.298e-02
+## estrogen_statusPositive                                         8.867e-02
+## progesterone_statusPositive                                     5.365e-02
+## regional_node_examined                                          1.098e-03
+## reginol_node_positive                                           3.232e-03
+## survival_months                                                 1.220e-03
+## t_stageT2:regional_node_examined                                1.506e-03
+## t_stageT3:regional_node_examined                                2.204e-03
+## t_stageT4:regional_node_examined                                4.612e-03
+## t_stageT2:estrogen_statusPositive                               5.680e-02
+## t_stageT3:estrogen_statusPositive                               7.207e-02
+## t_stageT4:estrogen_statusPositive                               1.237e-01
+## raceOther:survival_months                                       1.219e-03
+## raceWhite:survival_months                                       8.906e-04
+## t_stageT2:survival_months                                       5.443e-04
+## t_stageT3:survival_months                                       7.696e-04
+## t_stageT4:survival_months                                       1.607e-03
+## differentiatePoorly differentiated:progesterone_statusPositive  3.269e-02
+## differentiateUndifferentiated:progesterone_statusPositive       3.081e-01
+## differentiateWell differentiated:progesterone_statusPositive    5.726e-02
+## differentiatePoorly differentiated:survival_months              5.698e-04
+## differentiateUndifferentiated:survival_months                   4.052e-03
+## differentiateWell differentiated:survival_months                7.837e-04
+## estrogen_statusPositive:survival_months                         1.025e-03
+## progesterone_statusPositive:survival_months                     6.888e-04
+## reginol_node_positive:survival_months                           4.464e-05
+##                                                                t value Pr(&gt;|t|)
+## (Intercept)                                                      1.976 0.048309
+## age                                                             -3.638 0.000280
+## raceOther                                                        3.167 0.001558
+## raceWhite                                                        3.384 0.000725
+## t_stageT2                                                       -2.879 0.004019
+## t_stageT3                                                       -3.411 0.000657
+## t_stageT4                                                       -2.740 0.006175
+## differentiatePoorly differentiated                              -1.392 0.163896
+## differentiateUndifferentiated                                   -2.288 0.022224
+## differentiateWell differentiated                                 3.990 6.77e-05
+## estrogen_statusPositive                                          0.059 0.953282
+## progesterone_statusPositive                                      6.780 1.47e-11
+## regional_node_examined                                           2.745 0.006094
+## reginol_node_positive                                           -8.146 5.64e-16
+## survival_months                                                  7.795 9.11e-15
+## t_stageT2:regional_node_examined                                -0.192 0.847648
+## t_stageT3:regional_node_examined                                -0.799 0.424189
+## t_stageT4:regional_node_examined                                 1.130 0.258498
+## t_stageT2:estrogen_statusPositive                                0.800 0.423909
+## t_stageT3:estrogen_statusPositive                                2.010 0.044540
+## t_stageT4:estrogen_statusPositive                                0.126 0.899842
+## raceOther:survival_months                                       -2.661 0.007843
+## raceWhite:survival_months                                       -2.831 0.004673
+## t_stageT2:survival_months                                        3.428 0.000616
+## t_stageT3:survival_months                                        2.669 0.007648
+## t_stageT4:survival_months                                        1.134 0.256729
+## differentiatePoorly differentiated:progesterone_statusPositive  -2.378 0.017498
+## differentiateUndifferentiated:progesterone_statusPositive        0.237 0.812452
+## differentiateWell differentiated:progesterone_statusPositive    -0.988 0.323372
+## differentiatePoorly differentiated:survival_months               2.242 0.025023
+## differentiateUndifferentiated:survival_months                    1.189 0.234381
+## differentiateWell differentiated:survival_months                -4.118 3.93e-05
+## estrogen_statusPositive:survival_months                          0.024 0.980868
+## progesterone_statusPositive:survival_months                     -5.335 1.04e-07
+## reginol_node_positive:survival_months                            4.504 6.94e-06
+##                                                                   
+## (Intercept)                                                    *  
+## age                                                            ***
+## raceOther                                                      ** 
+## raceWhite                                                      ***
+## t_stageT2                                                      ** 
+## t_stageT3                                                      ***
+## t_stageT4                                                      ** 
+## differentiatePoorly differentiated                                
+## differentiateUndifferentiated                                  *  
+## differentiateWell differentiated                               ***
+## estrogen_statusPositive                                           
+## progesterone_statusPositive                                    ***
+## regional_node_examined                                         ** 
+## reginol_node_positive                                          ***
+## survival_months                                                ***
+## t_stageT2:regional_node_examined                                  
+## t_stageT3:regional_node_examined                                  
+## t_stageT4:regional_node_examined                                  
+## t_stageT2:estrogen_statusPositive                                 
+## t_stageT3:estrogen_statusPositive                              *  
+## t_stageT4:estrogen_statusPositive                                 
+## raceOther:survival_months                                      ** 
+## raceWhite:survival_months                                      ** 
+## t_stageT2:survival_months                                      ***
+## t_stageT3:survival_months                                      ** 
+## t_stageT4:survival_months                                         
+## differentiatePoorly differentiated:progesterone_statusPositive *  
+## differentiateUndifferentiated:progesterone_statusPositive         
+## differentiateWell differentiated:progesterone_statusPositive      
+## differentiatePoorly differentiated:survival_months             *  
+## differentiateUndifferentiated:survival_months                     
+## differentiateWell differentiated:survival_months               ***
+## estrogen_statusPositive:survival_months                           
+## progesterone_statusPositive:survival_months                    ***
+## reginol_node_positive:survival_months                          ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 0.08162187)
+## 
+##     Null deviance: 343.53  on 2763  degrees of freedom
+## Residual deviance: 222.75  on 2729  degrees of freedom
+## AIC: 955.03
+## 
+## Number of Fisher Scoring iterations: 2
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>summary <span style="color:#000;font-weight:bold">|&gt;</span>
+</span></span><span style="display:flex;"><span>   knitr<span style="color:#000;font-weight:bold">::</span><span style="color:#900;font-weight:bold">kable</span>()
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:right">x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">(Intercept)</td>
+<td style="text-align:right">0.1537419</td>
+</tr>
+<tr>
+<td style="text-align:left">age</td>
+<td style="text-align:right">-0.0022053</td>
+</tr>
+<tr>
+<td style="text-align:left">raceOther</td>
+<td style="text-align:right">0.2884935</td>
+</tr>
+<tr>
+<td style="text-align:left">raceWhite</td>
+<td style="text-align:right">0.2209561</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT2</td>
+<td style="text-align:right">-0.1660725</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT3</td>
+<td style="text-align:right">-0.2147289</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT4</td>
+<td style="text-align:right">-0.2764899</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiatePoorly differentiated</td>
+<td style="text-align:right">-0.0670680</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateUndifferentiated</td>
+<td style="text-align:right">-0.5659631</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateWell differentiated</td>
+<td style="text-align:right">0.3324712</td>
+</tr>
+<tr>
+<td style="text-align:left">estrogen_statusPositive</td>
+<td style="text-align:right">0.0582558</td>
+</tr>
+<tr>
+<td style="text-align:left">progesterone_statusPositive</td>
+<td style="text-align:right">0.3711592</td>
+</tr>
+<tr>
+<td style="text-align:left">regional_node_examined</td>
+<td style="text-align:right">0.0028254</td>
+</tr>
+<tr>
+<td style="text-align:left">reginol_node_positive</td>
+<td style="text-align:right">-0.0261071</td>
+</tr>
+<tr>
+<td style="text-align:left">survival_months</td>
+<td style="text-align:right">0.0096127</td>
+</tr>
+<tr>
+<td style="text-align:left">raceOther:survival_months</td>
+<td style="text-align:right">-0.0032434</td>
+</tr>
+<tr>
+<td style="text-align:left">raceWhite:survival_months</td>
+<td style="text-align:right">-0.0025598</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT2:survival_months</td>
+<td style="text-align:right">0.0018766</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT3:survival_months</td>
+<td style="text-align:right">0.0022880</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT4:survival_months</td>
+<td style="text-align:right">0.0017931</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiatePoorly differentiated:progesterone_statusPositive</td>
+<td style="text-align:right">-0.0849460</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateUndifferentiated:progesterone_statusPositive</td>
+<td style="text-align:right">0.1160276</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateWell differentiated:progesterone_statusPositive</td>
+<td style="text-align:right">-0.0602197</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiatePoorly differentiated:survival_months</td>
+<td style="text-align:right">0.0013630</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateUndifferentiated:survival_months</td>
+<td style="text-align:right">0.0042187</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateWell differentiated:survival_months</td>
+<td style="text-align:right">-0.0031977</td>
+</tr>
+<tr>
+<td style="text-align:left">progesterone_statusPositive:survival_months</td>
+<td style="text-align:right">-0.0037659</td>
+</tr>
+<tr>
+<td style="text-align:left">reginol_node_positive:survival_months</td>
+<td style="text-align:right">0.0001977</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+<h2 id="prediction">prediction
+  <a href="#prediction"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="method">Method
+  <a href="#method"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="survival-analysis">Survival analysis
+  <a href="#survival-analysis"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>To find the effect of covariates on survival time and their contributions to the outcome, survival analysis using the Cox proportional hazards model is conducted, which allows to compare hazard ratios among the covariates.</p>
+<ol>
+<li>Fitted a full Cox model with all variables and possible pairwise interactions as predictors on training data</li>
+<li>After evaluating model fit and testing assumptions by “cox.zph()” function, variables with non-significant p-values, which meet the assumptions, were selected, and a new Cox model</li>
+<li>The variable selection process was performed by stepwise selection and the final model was tested by the Receiver Operating Characteristic Curve (ROC) and the model’s Area Under the Curve (AUC)</li>
+<li>The difference in prediction accuracy of the race was adjusted by adding “weight” parameter to the model.</li>
+</ol>
+
+
+
+
+<h1 id="survival-analysis-1">survival analysis
+  <a href="#survival-analysis-1"></a>
+</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#900;font-weight:bold">par</span>(mfrow <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#099">2</span>,<span style="color:#099">2</span>))
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">plot</span>(cox_zph_result[8], ylab <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;residuals of a_stage&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">plot</span>(cox_zph_result[10], ylab <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;residuals of estrogen_status&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">plot</span>(cox_zph_result[11], ylab <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;residuals of progesterone_status&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">plot</span>(cox_zph_result[15], ylab <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34; estrogen_status:progesterone_status&#34;</span>)
+</span></span></code></pre></div><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>cox_model_ass <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">coxph</span>(<span style="color:#900;font-weight:bold">Surv</span>(survival_months, status) <span style="color:#000;font-weight:bold">~</span> . <span style="color:#000;font-weight:bold">-</span> a_stage <span style="color:#000;font-weight:bold">-</span> estrogen_status <span style="color:#000;font-weight:bold">-</span> progesterone_status <span style="color:#000;font-weight:bold">+</span> t_stage<span style="color:#000;font-weight:bold">*</span>n_stage <span style="color:#000;font-weight:bold">+</span> 
+</span></span><span style="display:flex;"><span>                     tumor_size<span style="color:#000;font-weight:bold">*</span>regional_node_examined, data <span style="color:#000;font-weight:bold">=</span> Training)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cox_zph_result <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">cox.zph</span>(cox_model_ass)
+</span></span><span style="display:flex;"><span>cox_zph_result
+</span></span></code></pre></div><pre tabindex="0"><code>##                                      chisq df    p
+## age                                0.03296  1 0.86
+## race                               0.60553  2 0.74
+## marital_status                     2.38312  4 0.67
+## t_stage                            1.26339  3 0.74
+## n_stage                            0.16187  2 0.92
+## x6th_stage                         0.48207  3 0.92
+## differentiate                      6.47950  3 0.09
+## tumor_size                         0.00985  1 0.92
+## regional_node_examined             0.00178  1 0.97
+## reginol_node_positive              0.11823  1 0.73
+## t_stage:n_stage                    0.74192  3 0.86
+## tumor_size:regional_node_examined  0.27204  1 0.60
+## GLOBAL                            17.30211 25 0.87
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#model selection</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">step</span>(cox_model_ass, direction <span style="color:#000;font-weight:bold">=</span>  <span style="color:#d14">&#34;backward&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Start:  AIC=5921.37
+## Surv(survival_months, status) ~ (age + race + marital_status + 
+##     t_stage + n_stage + x6th_stage + differentiate + grade + 
+##     a_stage + tumor_size + estrogen_status + progesterone_status + 
+##     regional_node_examined + reginol_node_positive) - a_stage - 
+##     estrogen_status - progesterone_status + t_stage * n_stage + 
+##     tumor_size * regional_node_examined
+## 
+## 
+## Step:  AIC=5921.37
+## Surv(survival_months, status) ~ age + race + marital_status + 
+##     t_stage + n_stage + x6th_stage + differentiate + tumor_size + 
+##     regional_node_examined + reginol_node_positive + t_stage:n_stage + 
+##     tumor_size:regional_node_examined
+## 
+## 
+## Step:  AIC=5921.37
+## Surv(survival_months, status) ~ age + race + marital_status + 
+##     t_stage + n_stage + differentiate + tumor_size + regional_node_examined + 
+##     reginol_node_positive + t_stage:n_stage + tumor_size:regional_node_examined
+## 
+##                                     Df    AIC
+## - t_stage:n_stage                    6 5911.7
+## - tumor_size:regional_node_examined  1 5919.5
+## &lt;none&gt;                                 5921.4
+## - race                               2 5924.1
+## - marital_status                     4 5926.0
+## - age                                1 5933.9
+## - reginol_node_positive              1 5934.9
+## - differentiate                      3 5961.7
+## 
+## Step:  AIC=5911.67
+## Surv(survival_months, status) ~ age + race + marital_status + 
+##     t_stage + n_stage + differentiate + tumor_size + regional_node_examined + 
+##     reginol_node_positive + tumor_size:regional_node_examined
+## 
+##                                     Df    AIC
+## - tumor_size:regional_node_examined  1 5909.8
+## &lt;none&gt;                                 5911.7
+## - race                               2 5913.9
+## - marital_status                     4 5915.9
+## - t_stage                            3 5918.9
+## - n_stage                            2 5922.6
+## - age                                1 5924.3
+## - reginol_node_positive              1 5925.1
+## - differentiate                      3 5951.1
+## 
+## Step:  AIC=5909.77
+## Surv(survival_months, status) ~ age + race + marital_status + 
+##     t_stage + n_stage + differentiate + tumor_size + regional_node_examined + 
+##     reginol_node_positive
+## 
+##                          Df    AIC
+## - tumor_size              1 5907.8
+## &lt;none&gt;                      5909.8
+## - race                    2 5912.0
+## - marital_status          4 5914.0
+## - t_stage                 3 5916.9
+## - n_stage                 2 5920.6
+## - age                     1 5922.4
+## - regional_node_examined  1 5923.0
+## - reginol_node_positive   1 5923.5
+## - differentiate           3 5949.1
+## 
+## Step:  AIC=5907.81
+## Surv(survival_months, status) ~ age + race + marital_status + 
+##     t_stage + n_stage + differentiate + regional_node_examined + 
+##     reginol_node_positive
+## 
+##                          Df    AIC
+## &lt;none&gt;                      5907.8
+## - race                    2 5910.1
+## - marital_status          4 5912.0
+## - n_stage                 2 5918.6
+## - age                     1 5920.4
+## - regional_node_examined  1 5921.0
+## - reginol_node_positive   1 5921.6
+## - t_stage                 3 5923.3
+## - differentiate           3 5947.1
+</code></pre><pre tabindex="0"><code>## Call:
+## coxph(formula = Surv(survival_months, status) ~ age + race + 
+##     marital_status + t_stage + n_stage + differentiate + regional_node_examined + 
+##     reginol_node_positive, data = Training)
+## 
+##                                         coef exp(coef)  se(coef)      z
+## age                                 0.022473  1.022727  0.005942  3.782
+## raceOther                          -0.610117  0.543287  0.259729 -2.349
+## raceWhite                          -0.339933  0.711818  0.161495 -2.105
+## marital_statusMarried              -0.051781  0.949537  0.152680 -0.339
+## marital_statusSeparated             1.038584  2.825215  0.346701  2.996
+## marital_statusSingle                0.172483  1.188252  0.184389  0.935
+## marital_statusWidowed               0.276586  1.318620  0.215469  1.284
+## t_stageT2                           0.443206  1.557693  0.127400  3.479
+## t_stageT3                           0.553283  1.738953  0.158469  3.491
+## t_stageT4                           0.865483  2.376154  0.229960  3.764
+## n_stageN2                           0.501522  1.651233  0.132624  3.782
+## n_stageN3                           0.575532  1.778077  0.225140  2.556
+## differentiatePoorly differentiated  0.527535  1.694750  0.106241  4.965
+## differentiateUndifferentiated       1.159010  3.186775  0.514292  2.254
+## differentiateWell differentiated   -0.645643  0.524325  0.225315 -2.866
+## regional_node_examined             -0.030139  0.970311  0.008019 -3.758
+## reginol_node_positive               0.060174  1.062021  0.014433  4.169
+##                                           p
+## age                                0.000155
+## raceOther                          0.018821
+## raceWhite                          0.035298
+## marital_statusMarried              0.734499
+## marital_statusSeparated            0.002739
+## marital_statusSingle               0.349567
+## marital_statusWidowed              0.199267
+## t_stageT2                          0.000504
+## t_stageT3                          0.000480
+## t_stageT4                          0.000167
+## n_stageN2                          0.000156
+## n_stageN3                          0.010578
+## differentiatePoorly differentiated 6.85e-07
+## differentiateUndifferentiated      0.024221
+## differentiateWell differentiated   0.004163
+## regional_node_examined             0.000171
+## reginol_node_positive              3.06e-05
+## 
+## Likelihood ratio test=271.6  on 17 df, p=&lt; 2.2e-16
+## n= 2766, number of events= 403
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>cox_model_final <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">coxph</span>(<span style="color:#900;font-weight:bold">Surv</span>(survival_months, status) <span style="color:#000;font-weight:bold">~</span> age <span style="color:#000;font-weight:bold">+</span> race <span style="color:#000;font-weight:bold">+</span> 
+</span></span><span style="display:flex;"><span>    marital_status <span style="color:#000;font-weight:bold">+</span> t_stage <span style="color:#000;font-weight:bold">+</span> n_stage <span style="color:#000;font-weight:bold">+</span> differentiate <span style="color:#000;font-weight:bold">+</span> regional_node_examined <span style="color:#000;font-weight:bold">+</span> 
+</span></span><span style="display:flex;"><span>    reginol_node_positive, data <span style="color:#000;font-weight:bold">=</span> Training)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">as.data.frame</span>(<span style="color:#900;font-weight:bold">coef</span>(<span style="color:#900;font-weight:bold">summary</span>(cox_model_final))) <span style="color:#000;font-weight:bold">|&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">arrange</span>(<span style="color:#900;font-weight:bold">`Pr</span>(<span style="color:#000;font-weight:bold">&gt;|</span>z<span style="color:#000;font-weight:bold">|</span>)`) <span style="color:#000;font-weight:bold">|&gt;</span>
+</span></span><span style="display:flex;"><span>  knitr<span style="color:#000;font-weight:bold">::</span><span style="color:#900;font-weight:bold">kable</span>(col.names <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#d14">&#34;term&#34;</span>,<span style="color:#d14">&#34;coef&#34;</span>, <span style="color:#d14">&#34;exp(coef)&#34;</span> , <span style="color:#d14">&#34;se(coef)&#34;</span>,<span style="color:#d14">&#34;z&#34;</span>, <span style="color:#d14">&#34;Pr(&gt;z)&#34;</span>),digits <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">4</span>)
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th style="text-align:left">term</th>
+<th style="text-align:right">coef</th>
+<th style="text-align:right">exp(coef)</th>
+<th style="text-align:right">se(coef)</th>
+<th style="text-align:right">z</th>
+<th style="text-align:right">Pr(&gt;z)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">differentiatePoorly differentiated</td>
+<td style="text-align:right">0.5275</td>
+<td style="text-align:right">1.6947</td>
+<td style="text-align:right">0.1062</td>
+<td style="text-align:right">4.9654</td>
+<td style="text-align:right">0.0000</td>
+</tr>
+<tr>
+<td style="text-align:left">reginol_node_positive</td>
+<td style="text-align:right">0.0602</td>
+<td style="text-align:right">1.0620</td>
+<td style="text-align:right">0.0144</td>
+<td style="text-align:right">4.1692</td>
+<td style="text-align:right">0.0000</td>
+</tr>
+<tr>
+<td style="text-align:left">age</td>
+<td style="text-align:right">0.0225</td>
+<td style="text-align:right">1.0227</td>
+<td style="text-align:right">0.0059</td>
+<td style="text-align:right">3.7822</td>
+<td style="text-align:right">0.0002</td>
+</tr>
+<tr>
+<td style="text-align:left">n_stageN2</td>
+<td style="text-align:right">0.5015</td>
+<td style="text-align:right">1.6512</td>
+<td style="text-align:right">0.1326</td>
+<td style="text-align:right">3.7815</td>
+<td style="text-align:right">0.0002</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT4</td>
+<td style="text-align:right">0.8655</td>
+<td style="text-align:right">2.3762</td>
+<td style="text-align:right">0.2300</td>
+<td style="text-align:right">3.7636</td>
+<td style="text-align:right">0.0002</td>
+</tr>
+<tr>
+<td style="text-align:left">regional_node_examined</td>
+<td style="text-align:right">-0.0301</td>
+<td style="text-align:right">0.9703</td>
+<td style="text-align:right">0.0080</td>
+<td style="text-align:right">-3.7584</td>
+<td style="text-align:right">0.0002</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT3</td>
+<td style="text-align:right">0.5533</td>
+<td style="text-align:right">1.7390</td>
+<td style="text-align:right">0.1585</td>
+<td style="text-align:right">3.4914</td>
+<td style="text-align:right">0.0005</td>
+</tr>
+<tr>
+<td style="text-align:left">t_stageT2</td>
+<td style="text-align:right">0.4432</td>
+<td style="text-align:right">1.5577</td>
+<td style="text-align:right">0.1274</td>
+<td style="text-align:right">3.4789</td>
+<td style="text-align:right">0.0005</td>
+</tr>
+<tr>
+<td style="text-align:left">marital_statusSeparated</td>
+<td style="text-align:right">1.0386</td>
+<td style="text-align:right">2.8252</td>
+<td style="text-align:right">0.3467</td>
+<td style="text-align:right">2.9956</td>
+<td style="text-align:right">0.0027</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateWell differentiated</td>
+<td style="text-align:right">-0.6456</td>
+<td style="text-align:right">0.5243</td>
+<td style="text-align:right">0.2253</td>
+<td style="text-align:right">-2.8655</td>
+<td style="text-align:right">0.0042</td>
+</tr>
+<tr>
+<td style="text-align:left">n_stageN3</td>
+<td style="text-align:right">0.5755</td>
+<td style="text-align:right">1.7781</td>
+<td style="text-align:right">0.2251</td>
+<td style="text-align:right">2.5563</td>
+<td style="text-align:right">0.0106</td>
+</tr>
+<tr>
+<td style="text-align:left">raceOther</td>
+<td style="text-align:right">-0.6101</td>
+<td style="text-align:right">0.5433</td>
+<td style="text-align:right">0.2597</td>
+<td style="text-align:right">-2.3491</td>
+<td style="text-align:right">0.0188</td>
+</tr>
+<tr>
+<td style="text-align:left">differentiateUndifferentiated</td>
+<td style="text-align:right">1.1590</td>
+<td style="text-align:right">3.1868</td>
+<td style="text-align:right">0.5143</td>
+<td style="text-align:right">2.2536</td>
+<td style="text-align:right">0.0242</td>
+</tr>
+<tr>
+<td style="text-align:left">raceWhite</td>
+<td style="text-align:right">-0.3399</td>
+<td style="text-align:right">0.7118</td>
+<td style="text-align:right">0.1615</td>
+<td style="text-align:right">-2.1049</td>
+<td style="text-align:right">0.0353</td>
+</tr>
+<tr>
+<td style="text-align:left">marital_statusWidowed</td>
+<td style="text-align:right">0.2766</td>
+<td style="text-align:right">1.3186</td>
+<td style="text-align:right">0.2155</td>
+<td style="text-align:right">1.2836</td>
+<td style="text-align:right">0.1993</td>
+</tr>
+<tr>
+<td style="text-align:left">marital_statusSingle</td>
+<td style="text-align:right">0.1725</td>
+<td style="text-align:right">1.1883</td>
+<td style="text-align:right">0.1844</td>
+<td style="text-align:right">0.9354</td>
+<td style="text-align:right">0.3496</td>
+</tr>
+<tr>
+<td style="text-align:left">marital_statusMarried</td>
+<td style="text-align:right">-0.0518</td>
+<td style="text-align:right">0.9495</td>
+<td style="text-align:right">0.1527</td>
+<td style="text-align:right">-0.3391</td>
+<td style="text-align:right">0.7345</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#accuracy of the final model</span>
+</span></span><span style="display:flex;"><span>predicted_classes <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">ifelse</span>(<span style="color:#900;font-weight:bold">predict</span>(cox_model_final,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>Testing) <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0.5</span>, <span style="color:#099">1</span>, <span style="color:#099">0</span>)
+</span></span><span style="display:flex;"><span>accuracy <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(predicted_classes <span style="color:#000;font-weight:bold">==</span> Testing<span style="color:#000;font-weight:bold">$</span>status)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">cat</span>(<span style="color:#d14">&#34;Accuracy&#34;</span>, accuracy, <span style="color:#d14">&#34;\n&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Accuracy 0.709062
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#for race accuracy</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">#all race</span>
+</span></span><span style="display:flex;"><span>fold_test <span style="color:#000;font-weight:bold">&lt;-</span> Testing
+</span></span><span style="display:flex;"><span>fold_train <span style="color:#000;font-weight:bold">&lt;-</span> Training
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fold_pre <span style="color:#000;font-weight:bold">&lt;-</span> cox_model_final
+</span></span><span style="display:flex;"><span>fold_predict <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(fold_pre,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>fold_test)
+</span></span><span style="display:flex;"><span>roc1<span style="color:#000;font-weight:bold">&lt;-</span><span style="color:#900;font-weight:bold">roc</span>(fold_test<span style="color:#000;font-weight:bold">$</span>status,fold_predict)
+</span></span></code></pre></div><pre tabindex="0"><code>## Setting levels: control = 0, case = 1
+</code></pre><pre tabindex="0"><code>## Setting direction: controls &lt; cases
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#white</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">par</span>(mfrow <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#099">1</span>,<span style="color:#099">1</span>))
+</span></span><span style="display:flex;"><span>fold_test_w <span style="color:#000;font-weight:bold">&lt;-</span> Testing <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>fold_train_w <span style="color:#000;font-weight:bold">&lt;-</span> Training <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fold_pre_w <span style="color:#000;font-weight:bold">&lt;-</span> cox_model_final 
+</span></span><span style="display:flex;"><span>fold_predict_w <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(fold_pre_w,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>fold_test_w)
+</span></span><span style="display:flex;"><span>roc2<span style="color:#000;font-weight:bold">&lt;-</span><span style="color:#900;font-weight:bold">roc</span>(fold_test_w<span style="color:#000;font-weight:bold">$</span>status,fold_predict_w)
+</span></span></code></pre></div><pre tabindex="0"><code>## Setting levels: control = 0, case = 1
+## Setting direction: controls &lt; cases
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#black</span>
+</span></span><span style="display:flex;"><span>fold_test_b <span style="color:#000;font-weight:bold">&lt;-</span> Testing <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>fold_train_b <span style="color:#000;font-weight:bold">&lt;-</span> Training <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fold_pre_b <span style="color:#000;font-weight:bold">&lt;-</span> cox_model_final 
+</span></span><span style="display:flex;"><span>fold_predict_b <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(fold_pre_b,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>fold_test_b)
+</span></span><span style="display:flex;"><span>roc3<span style="color:#000;font-weight:bold">&lt;-</span><span style="color:#900;font-weight:bold">roc</span>(fold_test_b<span style="color:#000;font-weight:bold">$</span>status,fold_predict_b)
+</span></span></code></pre></div><pre tabindex="0"><code>## Setting levels: control = 0, case = 1
+## Setting direction: controls &lt; cases
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#ROC plot</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">plot</span>(roc1, col <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;blue&#34;</span>, main <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Receiver Operating Characteristic (ROC) Curve&#34;</span>, 
+</span></span><span style="display:flex;"><span>     lwd <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>, lty <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>,print.auc<span style="color:#000;font-weight:bold">=</span><span style="color:#999">T</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">lines</span>(roc2, col <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;red&#34;</span>, lwd <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>, lty <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">lines</span>(roc3, col <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;orange&#34;</span>, lwd <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>, lty <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">3</span>)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">legend</span>(<span style="color:#d14">&#34;bottomright&#34;</span>, legend <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#d14">&#34;Main model&#34;</span>, <span style="color:#d14">&#34;White&#34;</span>, <span style="color:#d14">&#34;Black and Others&#34;</span>),
+</span></span><span style="display:flex;"><span>       col <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#d14">&#34;blue&#34;</span>, <span style="color:#d14">&#34;red&#34;</span>, <span style="color:#d14">&#34;orange&#34;</span>), lty <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#099">1</span>, <span style="color:#099">2</span>, <span style="color:#099">3</span>), lwd <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>)
+</span></span></code></pre></div><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#accuracy for white</span>
+</span></span><span style="display:flex;"><span>predicted_classes_w <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">ifelse</span>(fold_predict_w <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0.5</span>, <span style="color:#099">1</span>, <span style="color:#099">0</span>)
+</span></span><span style="display:flex;"><span>accuracy_w <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(predicted_classes_w <span style="color:#000;font-weight:bold">==</span> fold_test_w<span style="color:#000;font-weight:bold">$</span>status)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">cat</span>(<span style="color:#d14">&#34;Accuracy white&#34;</span>, accuracy_w, <span style="color:#d14">&#34;\n&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Accuracy white 0.7156398
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#accuracy for black</span>
+</span></span><span style="display:flex;"><span>predicted_classes_b <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">ifelse</span>(fold_predict_b <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0.5</span>, <span style="color:#099">1</span>, <span style="color:#099">0</span>)
+</span></span><span style="display:flex;"><span>accuracy_b <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(predicted_classes_b <span style="color:#000;font-weight:bold">==</span> fold_test_b<span style="color:#000;font-weight:bold">$</span>status)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">cat</span>(<span style="color:#d14">&#34;Accuracy black&#34;</span>, accuracy_b, <span style="color:#d14">&#34;\n&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Accuracy black 0.6748768
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#adjusted model</span>
+</span></span><span style="display:flex;"><span>weights <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">ifelse</span>(Training<span style="color:#000;font-weight:bold">$</span>race <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;White&#34;</span>, <span style="color:#099">1</span>, <span style="color:#099">5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cox_model_weighted <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">coxph</span>(<span style="color:#900;font-weight:bold">Surv</span>(survival_months, status) <span style="color:#000;font-weight:bold">~</span> age <span style="color:#000;font-weight:bold">+</span> race <span style="color:#000;font-weight:bold">+</span> 
+</span></span><span style="display:flex;"><span>                             marital_status <span style="color:#000;font-weight:bold">+</span> t_stage <span style="color:#000;font-weight:bold">+</span> n_stage <span style="color:#000;font-weight:bold">+</span> differentiate <span style="color:#000;font-weight:bold">+</span> 
+</span></span><span style="display:flex;"><span>                             regional_node_examined <span style="color:#000;font-weight:bold">+</span> reginol_node_positive, 
+</span></span><span style="display:flex;"><span>                           data <span style="color:#000;font-weight:bold">=</span> Training, weights <span style="color:#000;font-weight:bold">=</span> weights)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">#accuracy of the adjusted model</span>
+</span></span><span style="display:flex;"><span>predicted_classes <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">ifelse</span>(<span style="color:#900;font-weight:bold">predict</span>(cox_model_weighted,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>Testing) <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0.5</span>, <span style="color:#099">1</span>, <span style="color:#099">0</span>)
+</span></span><span style="display:flex;"><span>accuracy <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(predicted_classes <span style="color:#000;font-weight:bold">==</span> Testing<span style="color:#000;font-weight:bold">$</span>status)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">cat</span>(<span style="color:#d14">&#34;Accuracy&#34;</span>, accuracy, <span style="color:#d14">&#34;\n&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Accuracy 0.6613672
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#ROC again</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">#for race</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">#all race</span>
+</span></span><span style="display:flex;"><span>fold_test <span style="color:#000;font-weight:bold">&lt;-</span> Testing
+</span></span><span style="display:flex;"><span>fold_train <span style="color:#000;font-weight:bold">&lt;-</span> Training
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fold_pre <span style="color:#000;font-weight:bold">&lt;-</span> cox_model_weighted
+</span></span><span style="display:flex;"><span>fold_predict <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(fold_pre,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>fold_test)
+</span></span><span style="display:flex;"><span>roc1<span style="color:#000;font-weight:bold">&lt;-</span><span style="color:#900;font-weight:bold">roc</span>(fold_test<span style="color:#000;font-weight:bold">$</span>status,fold_predict)
+</span></span></code></pre></div><pre tabindex="0"><code>## Setting levels: control = 0, case = 1
+</code></pre><pre tabindex="0"><code>## Setting direction: controls &lt; cases
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#white</span>
+</span></span><span style="display:flex;"><span>fold_test_w <span style="color:#000;font-weight:bold">&lt;-</span> Testing <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>fold_train_w <span style="color:#000;font-weight:bold">&lt;-</span> Training <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fold_pre_w <span style="color:#000;font-weight:bold">&lt;-</span> cox_model_weighted 
+</span></span><span style="display:flex;"><span>fold_predict_w <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(fold_pre_w,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>fold_test_w)
+</span></span><span style="display:flex;"><span>roc2<span style="color:#000;font-weight:bold">&lt;-</span><span style="color:#900;font-weight:bold">roc</span>(fold_test_w<span style="color:#000;font-weight:bold">$</span>status,fold_predict_w)
+</span></span></code></pre></div><pre tabindex="0"><code>## Setting levels: control = 0, case = 1
+## Setting direction: controls &lt; cases
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#black</span>
+</span></span><span style="display:flex;"><span>fold_test_b <span style="color:#000;font-weight:bold">&lt;-</span> Testing <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>fold_train_b <span style="color:#000;font-weight:bold">&lt;-</span> Training <span style="color:#000;font-weight:bold">|&gt;</span> <span style="color:#900;font-weight:bold">filter</span>(race <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fold_pre_b <span style="color:#000;font-weight:bold">&lt;-</span> cox_model_weighted 
+</span></span><span style="display:flex;"><span>fold_predict_b <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(fold_pre_b,type<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#39;lp&#39;</span>,newdata<span style="color:#000;font-weight:bold">=</span>fold_test_b)
+</span></span><span style="display:flex;"><span>roc3<span style="color:#000;font-weight:bold">&lt;-</span><span style="color:#900;font-weight:bold">roc</span>(fold_test_b<span style="color:#000;font-weight:bold">$</span>status,fold_predict_b)
+</span></span></code></pre></div><pre tabindex="0"><code>## Setting levels: control = 0, case = 1
+## Setting direction: controls &lt; cases
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#plot</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">plot</span>(roc1, col <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;blue&#34;</span>, main <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Receiver Operating Characteristic (ROC) Curve&#34;</span>, 
+</span></span><span style="display:flex;"><span>     lwd <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>, lty <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>,print.auc<span style="color:#000;font-weight:bold">=</span><span style="color:#999">T</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">lines</span>(roc2, col <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;red&#34;</span>, lwd <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>, lty <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">lines</span>(roc3, col <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;orange&#34;</span>, lwd <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>, lty <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">3</span>)
+</span></span></code></pre></div><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#accuracy for white</span>
+</span></span><span style="display:flex;"><span>predicted_classes_w <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">ifelse</span>(fold_predict_w <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0.5</span>, <span style="color:#099">1</span>, <span style="color:#099">0</span>)
+</span></span><span style="display:flex;"><span>accuracy_w <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(predicted_classes_w <span style="color:#000;font-weight:bold">==</span> fold_test_w<span style="color:#000;font-weight:bold">$</span>status)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">cat</span>(<span style="color:#d14">&#34;Accuracy&#34;</span>, accuracy_w, <span style="color:#d14">&#34;\n&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Accuracy 0.6682464
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">#accuracy for black</span>
+</span></span><span style="display:flex;"><span>predicted_classes_b <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">ifelse</span>(fold_predict_b <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0.5</span>, <span style="color:#099">1</span>, <span style="color:#099">0</span>)
+</span></span><span style="display:flex;"><span>accuracy_b <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(predicted_classes_b <span style="color:#000;font-weight:bold">==</span> fold_test_b<span style="color:#000;font-weight:bold">$</span>status)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">cat</span>(<span style="color:#d14">&#34;Accuracy&#34;</span>, accuracy_b, <span style="color:#d14">&#34;\n&#34;</span>)
+</span></span></code></pre></div><pre tabindex="0"><code>## Accuracy 0.6256158
+</code></pre>
+
+
+
+<h1 id="machine-learning">Machine Learning
+  <a href="#machine-learning"></a>
+</h1>
+
+
+
+
+<h2 id="read-dataset">Read Dataset
+  <a href="#read-dataset"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="splite-data-into-training-and-testing">Splite data into training and testing
+  <a href="#splite-data-into-training-and-testing"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h2 id="method-1">Method
+  <a href="#method-1"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="decision-tree">Decision Tree
+  <a href="#decision-tree"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>The decision tree is an algorithm for solving classification problems, and the model uses a tree structure. Each node of the decision tree follows the if-then-else rule. Specifically, each node of the tree is judged using a certain attribute value, and based on the judgment result, it is decided which branch to enter until the leaf is reached. In addition, decision tree model is not restricted by any strict assumptions.</p>
+<ol>
+<li>Obtain the data ( D = { (x_n, y_n) }_{n=1}^N ).</li>
+<li>Split the data into two regions ( R_1 ) and ( R_2 ), where ( R_1(s, w) = { x : x \leq w } ) and ( R_2(s, w) = { x : x \geq w } ) for any ( x \in \mathbb{R}^d ).</li>
+<li>Find ( s ) and ( w ) such that the ( RSS(s, w) ) is minimized:
+[ RSS(s, w) = \sum_{x_i \in R_1} (y_i - \bar{y}<em>{R_1})^2 + \sum</em>{x_i \in R_2} (y_i - \bar{y}_{R_2})^2 ]</li>
+<li>Repeat Step 1-3 to split the regions based on the regions that could lead to the largest decrease in ( RSS ).</li>
+</ol>
+
+
+
+
+<h2 id="decision-tree-1">Decision Tree
+  <a href="#decision-tree-1"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#900;font-weight:bold">set.seed</span>(<span style="color:#099">2</span>)
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Decision Tree Model</span>
+</span></span><span style="display:flex;"><span>dt_model <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">rpart</span>(Status <span style="color:#000;font-weight:bold">~</span> ., data <span style="color:#000;font-weight:bold">=</span> BC_train, method <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;class&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Plot Decision Tree </span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">library</span>(rpart)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">library</span>(rpart.plot)
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">rpart.plot</span>(dt_model,type<span style="color:#000;font-weight:bold">=</span><span style="color:#099">2</span>)
+</span></span></code></pre></div><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-26-1.png" width="672" />
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Examine the complexity plot</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">printcp</span>(dt_model)
+</span></span></code></pre></div><pre tabindex="0"><code>## 
+## Classification tree:
+## rpart(formula = Status ~ ., data = BC_train, method = &#34;class&#34;)
+## 
+## Variables actually used in tree construction:
+## [1] Age             differentiate   Marital.Status  Survival.Months
+## [5] Tumor.Size     
+## 
+## Root node error: 403/2766 = 0.1457
+## 
+## n= 2766 
+## 
+##         CP nsplit rel error  xerror     xstd
+## 1 0.325062      0   1.00000 1.00000 0.046042
+## 2 0.024814      1   0.67494 0.67494 0.038860
+## 3 0.012407      3   0.62531 0.64516 0.038084
+## 4 0.010000      5   0.60050 0.64516 0.038084
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>BC_test<span style="color:#000;font-weight:bold">$</span>pred_base  <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(dt_model, BC_test, type <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;class&#34;</span>)
+</span></span><span style="display:flex;"><span>dt_accuracy <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(BC_test<span style="color:#000;font-weight:bold">$</span>pred_base <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic">## 89.18919%</span>
+</span></span></code></pre></div><p>\</p>
+<p>The accuracy of decision tree model = 89.19%</p>
+
+
+
+
+<h2 id="method-2">Method
+  <a href="#method-2"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="random-forest-model">Random Forest Model
+  <a href="#random-forest-model"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>Random forest is a model composed of many independent decision trees, used for classification problems. Random forest uses bootstrap sampling, which is a self-service sampling method, to reduce variance and overfitting problems. Specifically, a data set D containing p predictors is randomly sampled n times with replacement to obtain a new dataset containing m predictors. Grow a decision tree using only m&lt;p predictors. The random forest model then evaluates and averages the classification results of each decision tree and treats it as the result. Random forest is not affected by variable multicollinearity and non-constant variance problems.</p>
+<ol>
+<li>Obtain the data ( D = { (x_n, y_n) }_{n=1}^N ).</li>
+<li>Draw a bootstrap sample ( (x_1^{(b)}, y_1^{(b)}), (x_2^{(b)}, y_2^{(b)}), \ldots, (x_n^{(b)}, y_n^{(b)}) ), for ( b = 1,2,\ldots,B ).</li>
+<li>Grow ( n ) decision tree based on the bootstrap sample with only ( m ) selected variables.</li>
+<li>Evaluate the prediction result from ( B ) bootstrap samples ( \hat{y}^{(1)}, \hat{y}^{(2)}, \ldots, \hat{y}^{(B)} ), obtain the final result ( \hat{y} = B^{-1} \sum_{b=1}^B \hat{y}^{(b)} ).</li>
+</ol>
+
+
+
+
+<h2 id="random-forest-model-1">Random Forest Model
+  <a href="#random-forest-model-1"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Setting seed</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">set.seed</span>(<span style="color:#099">120</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=5</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_5 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">5</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_5 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_5, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_5 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_5 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.50715</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=6</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_6 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">6</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_6 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_6, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_6 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_6 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.26868%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=7</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_7 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">7</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_7 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_7, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_7 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_7 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.50715</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=8</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_8 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">8</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_8 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_8, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_8 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_8 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.50715%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=9</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_9 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">9</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_9 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_9, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_9 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_9 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.34817%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=10</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_10 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">10</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_10 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_10, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_10 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_10 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.50715%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=11</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_11 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">11</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_11 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_11, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_11 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_11 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.58665% max</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## mtry=12</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Build RF Model</span>
+</span></span><span style="display:flex;"><span>classifier_RF_12 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">randomForest</span>(x <span style="color:#000;font-weight:bold">=</span> BC_train[<span style="color:#099">-16</span>],
+</span></span><span style="display:flex;"><span>                             y <span style="color:#000;font-weight:bold">=</span> BC_train<span style="color:#000;font-weight:bold">$</span>Status,
+</span></span><span style="display:flex;"><span>                             mtry<span style="color:#000;font-weight:bold">=</span><span style="color:#099">12</span>, importance<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">TRUE</span>,
+</span></span><span style="display:flex;"><span>                             ntree <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">500</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_12 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_12, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_12 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_12 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.42766%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>accuracy <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">c</span>(rf_accuracy_5,rf_accuracy_6,rf_accuracy_7,rf_accuracy_8,rf_accuracy_9,rf_accuracy_10,
+</span></span><span style="display:flex;"><span>      rf_accuracy_11,rf_accuracy_12)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## Plot Accuracy of different m value</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">library</span>(ggplot2)
+</span></span><span style="display:flex;"><span>df <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">data.frame</span>(x <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">5</span><span style="color:#000;font-weight:bold">:</span><span style="color:#099">12</span>, y <span style="color:#000;font-weight:bold">=</span><span style="color:#900;font-weight:bold">c</span>(rf_accuracy_5,rf_accuracy_6,rf_accuracy_7,rf_accuracy_8,
+</span></span><span style="display:flex;"><span>                                rf_accuracy_9,rf_accuracy_10,rf_accuracy_11,rf_accuracy_12))
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Create a line plot using ggplot2</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">ggplot</span>(df, <span style="color:#900;font-weight:bold">aes</span>(x, y)) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">geom_line</span>(color <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;#4CAF50&#34;</span>, size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2</span>) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">geom_point</span>(color <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;#FFC107&#34;</span>, size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">4</span>) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">labs</span>(title <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Compare the accuracy of different m&#34;</span>, x <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;# of predictors&#34;</span>, y <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Prediction Accuracy&#34;</span>) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">theme_minimal</span>() <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">theme</span>(plot.title <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">element_text</span>(hjust <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0.5</span>, size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">16</span>),
+</span></span><span style="display:flex;"><span>        axis.text <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">element_text</span>(size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">12</span>),
+</span></span><span style="display:flex;"><span>        axis.title <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">element_text</span>(size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">14</span>))
+</span></span></code></pre></div><pre tabindex="0"><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+</code></pre><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-27-1.png" width="672" />
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Predicting the Test set results</span>
+</span></span><span style="display:flex;"><span>y_pred_11 <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_11, newdata <span style="color:#000;font-weight:bold">=</span> BC_test[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>rf_accuracy_11 <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_11 <span style="color:#000;font-weight:bold">==</span> BC_test<span style="color:#000;font-weight:bold">$</span>Status) <span style="color:#998;font-style:italic"># Accuracy = 89.4277%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Confusion Matrix</span>
+</span></span><span style="display:flex;"><span>confusion_mtx <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">table</span>(BC_test[,<span style="color:#099">16</span>], y_pred_11)
+</span></span><span style="display:flex;"><span>confusion_mtx
+</span></span></code></pre></div><pre tabindex="0"><code>##        y_pred_11
+##         Alive Dead
+##   Alive  1020   25
+##   Dead    104  109
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#900;font-weight:bold">max</span>(confusion_mtx)
+</span></span></code></pre></div><pre tabindex="0"><code>## [1] 1020
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Plotting model</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">plot</span>(classifier_RF_11)
+</span></span></code></pre></div><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-28-1.png" width="672" />
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Importance plot</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">importance</span>(classifier_RF_11)
+</span></span></code></pre></div><pre tabindex="0"><code>##                             Alive        Dead MeanDecreaseAccuracy
+## Age                    10.4901449  14.6523910            16.462303
+## Race                    0.5392691   6.5340714             3.640364
+## Marital.Status          1.2467582   0.4608681             1.284040
+## T.Stage                 6.1257783  -2.9408482             4.872675
+## N.Stage                11.5046873   3.4381296            12.420452
+## X6th.Stage             17.0509812   5.0252807            18.869975
+## differentiate           4.8545772   6.9136684             7.446522
+## Grade                   4.5087573   6.7442450             6.713620
+## A.Stage                 3.4304038   0.5987303             3.755029
+## Tumor.Size             13.6398239   6.8155142            16.202170
+## Estrogen.Status        12.4041788   9.1016367            15.414394
+## Progesterone.Status    17.2606143  17.5342726            23.339697
+## Regional.Node.Examined 14.8432325  -4.2057227            12.181578
+## Reginol.Node.Positive  27.2767541  10.0949693            30.106327
+## Survival.Months        76.8092618 135.2818542           118.738467
+##                        MeanDecreaseGini
+## Age                           79.872051
+## Race                          13.356086
+## Marital.Status                26.629365
+## T.Stage                       11.781852
+## N.Stage                       10.132246
+## X6th.Stage                    19.152129
+## differentiate                 12.330879
+## Grade                         12.220727
+## A.Stage                        1.556432
+## Tumor.Size                    65.514044
+## Estrogen.Status                6.366235
+## Progesterone.Status           16.205027
+## Regional.Node.Examined        61.919663
+## Reginol.Node.Positive         47.133575
+## Survival.Months              304.379643
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Variable importance plot</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">varImpPlot</span>(classifier_RF_11)
+</span></span></code></pre></div><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-28-2.png" width="672" />
+\ 
+<p>The accuracy of random forest model = 89.43%</p>
+
+
+
+
+<h2 id="access-the-accuracy-of-white-and-black">Access the accuracy of white and black
+  <a href="#access-the-accuracy-of-white-and-black"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">## Extract testing data based on different race levels</span>
+</span></span><span style="display:flex;"><span>Test_White <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">subset</span>(BC_test, Race <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;White&#34;</span>)
+</span></span><span style="display:flex;"><span>Test_Black <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">subset</span>(BC_test, Race <span style="color:#000;font-weight:bold">==</span> <span style="color:#d14">&#34;Black&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## Decision Tree</span>
+</span></span><span style="display:flex;"><span>Test_White<span style="color:#000;font-weight:bold">$</span>pred_base  <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(dt_model, Test_White, type <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;class&#34;</span>)
+</span></span><span style="display:flex;"><span>Accuracy_White_DT <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(Test_White<span style="color:#000;font-weight:bold">$</span>pred_base <span style="color:#000;font-weight:bold">==</span> <span style="color:#900;font-weight:bold">as.factor</span>(Test_White<span style="color:#000;font-weight:bold">$</span>Status)) <span style="color:#998;font-style:italic">## White Accuracy = 89.57346%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Test_Black<span style="color:#000;font-weight:bold">$</span>pred_base  <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">predict</span>(dt_model, Test_Black, type <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;class&#34;</span>)
+</span></span><span style="display:flex;"><span>Accuracy_Black_DT <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(Test_Black<span style="color:#000;font-weight:bold">$</span>pred_base <span style="color:#000;font-weight:bold">==</span> <span style="color:#900;font-weight:bold">as.factor</span>(Test_Black<span style="color:#000;font-weight:bold">$</span>Status)) <span style="color:#998;font-style:italic">## Black Accuracy = 84.00%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">## Random Forest</span>
+</span></span><span style="display:flex;"><span>y_pred_white_rf <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_11, newdata <span style="color:#000;font-weight:bold">=</span> Test_White[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>Accuracy_White_RF <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_white_rf <span style="color:#000;font-weight:bold">==</span> <span style="color:#900;font-weight:bold">as.factor</span>(Test_White<span style="color:#000;font-weight:bold">$</span>Status)) <span style="color:#998;font-style:italic">## White Accuracy = 89.95261%</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>y_pred_black_rf <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">predict</span>(classifier_RF_11, newdata <span style="color:#000;font-weight:bold">=</span> Test_Black[<span style="color:#099">-16</span>])
+</span></span><span style="display:flex;"><span>Accuracy_Black_RF <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">mean</span>(y_pred_black_rf <span style="color:#000;font-weight:bold">==</span> <span style="color:#900;font-weight:bold">as.factor</span>(Test_Black<span style="color:#000;font-weight:bold">$</span>Status)) <span style="color:#998;font-style:italic">## Black Accuracy = 87.00%</span>
+</span></span></code></pre></div><ul>
+<li>Decision Tree White Accuracy = 89.57%</li>
+<li>Decision Tree Black Accuracy = 84.00%</li>
+<li>Random Forest White Accuracy = 89.86%</li>
+<li>Random Forest Black Accuracy = 86.00%</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#998;font-style:italic">## Plot Accuracy of different m value</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">library</span>(ggplot2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Create a data frame with the provided data</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#000;font-weight:bold">&lt;-</span> <span style="color:#900;font-weight:bold">data.frame</span>(
+</span></span><span style="display:flex;"><span>  Model <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#d14">&#34;logistic_white&#34;</span>, <span style="color:#d14">&#34;logistic_black&#34;</span>, <span style="color:#d14">&#34;survival_white&#34;</span>, <span style="color:#d14">&#34;survival_black&#34;</span>, <span style="color:#d14">&#34;dt_white&#34;</span>, <span style="color:#d14">&#34;dt_black&#34;</span>, <span style="color:#d14">&#34;rf_white&#34;</span>, <span style="color:#d14">&#34;rf_black&#34;</span>),
+</span></span><span style="display:flex;"><span>  Score <span style="color:#000;font-weight:bold">=</span> <span style="color:#900;font-weight:bold">c</span>(<span style="color:#099">0.8805687</span>, <span style="color:#099">0.8500000</span>, <span style="color:#099">0.6682464</span>, <span style="color:#099">0.6256158</span>, <span style="color:#099">0.8957350</span>, <span style="color:#099">0.8400000</span>, <span style="color:#099">0.8995260</span>, <span style="color:#099">0.8700000</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># Create a line chart using ggplot2</span>
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">ggplot</span>(data, <span style="color:#900;font-weight:bold">aes</span>(x <span style="color:#000;font-weight:bold">=</span> Model, y <span style="color:#000;font-weight:bold">=</span> Score, group <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>)) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">geom_line</span>(color <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;blue&#34;</span>) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">geom_point</span>(color <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;red&#34;</span>, size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">3</span>) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">labs</span>(title <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Race Accuracy&#34;</span>,
+</span></span><span style="display:flex;"><span>       x <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Different Methods&#34;</span>,
+</span></span><span style="display:flex;"><span>       y <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Accuracy&#34;</span>) <span style="color:#000;font-weight:bold">+</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">theme_minimal</span>()
+</span></span></code></pre></div><img src="/project/2023-12-20-breast-cancer/index_files/figure-html/unnamed-chunk-30-1.png" width="672" />
+
+
+
+
+<h2 id="results">Results
+  <a href="#results"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="dataset-description">Dataset Description
+  <a href="#dataset-description"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>The dataset “breast cancer” includes 4025 observations and 16 variables. The original dataset is split into a training set (70%) and a testing set (30%). The detailed variable description and summary statistics of numerical and categorical variables are presented in Table1 and Table2.</p>
+
+
+
+
+<h2 id="results-1">Results
+  <a href="#results-1"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="logistic-regression-1">Logistic Regression
+  <a href="#logistic-regression-1"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>“trainOut” removes two outliers 1004 and 2114, shown in Fig 8, and two of three correlated variables n_stage and x6th_stage, shown in Fig 9. “new_model” indicates a refined regression without outliers and correlated variables to meet assumptions. Significant variables include age, race, t stage, differentiate, estrogen status, progesterone status, regional node examined, reginol node positive, and survival months. After the pairwise interaction evaluation process, interactions between survival_months, t_stage, estrogen_status, progesterone_status, and reginol_node_positive are significant and selected into “best_fit”. Following two rounds of model selection, the finalized model, “best_fit2”, is defined as status ~ age + race + t stage + differentiate + estrogen status + progesterone status + reginol node examined + reginol node positive + survival months + race:survival months + t stage:survival months + differentiate:progesterone status + differentiate:survival months + progesterone status:survival months + reginol node positive:survival months. (full model shown below table3). The accuracy of best_fit2 applied to the testing data is 88.00%. Notably, the accuracy for the majority race group White is 88.06%, while for the minority group Black, it stands at 85.00%, shown in table3.</p>
+
+
+
+
+<h2 id="results-2">Results
+  <a href="#results-2"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="survival-analysis-2">Survival Analysis
+  <a href="#survival-analysis-2"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>After building the full Cox model with all variables that were interested in and several interaction terms, the result of the “cox.zph()” function was displayed in Table 4. The residuals of these covariables against time were shown in Fig 1. It is noticeable that their residuals had certain patterns, which could act as evidence to indicate that these four covariables may violate the assumptions of the Cox model. To keep the GLOBAL p-value (0.87) non-significant, those four variables were excluded, and a new Cox model was established with remaining covariables.
+The variable selection process was performed by backward selection, and the final model was constructed as below, and the parameter of the fitted model is shown in Table 5.
+Surv(survival_months, status) ~ age + race + marital_status + t_stage + n_stage + differentiate + regional_node_examined + reginol_node_positive
+Finally, the model was adjusted by adding a “weight” parameter to balance the sample size of different races, the prediction accuracy of the original final model and model adjusted by race were calculated for all races (White, Black, and Others). Results were displayed in Table 6 and ROC curves for three classes were included in Fig 2.</p>
+
+
+
+
+<h2 id="results-3">Results
+  <a href="#results-3"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="decision-tree-2">Decision Tree
+  <a href="#decision-tree-2"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>The fitted decision tree model is shown in Fig3. The feature selection in the decision tree model is a black box algorithm to obtains the most efficient and accurate model. The decision tree model uses 4 variables for classification, including survival month, age, differential, and marital status. By using the testing dataset, the prediction accuracy of the decision tree is 89.19%, the prediction accuracy for the white race is 89.57%, and for the black race is 84.00%.</p>
+
+
+
+
+<h2 id="results-4">Results
+  <a href="#results-4"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+
+
+
+
+<h3 id="random-forest">Random Forest
+  <a href="#random-forest"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h3>
+<p>Random Forest evaluates 500 decision tree models and obtains average results.  After testing the accuracy of 5 -12 variables to grow the tree, the results show that using 11 variables has the highest accuracy, reaching 89.5867% (Fig 4). The prediction accuracy for the white race is 89.9526%, and the accuracy for the black is 87.00%.
+In addition,  is also worth noting that the importance of each variable in the random forest tree is obtained by comparing the “Mean Decrease Accuracy”, that is, how much the accuracy of the model will decrease if that variable is removed from the model. According to Fig 5, the variable survival month is the most useful one, followed by reginol node-positive, progesterone status, age, X6th stage, and so on.</p>
+
+
+
+
+<h2 id="conclusion">Conclusion
+  <a href="#conclusion"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<p>In the logistic regression, the best_fit2 model suggests that with all else equal, the log odds for t_stage T2 are 0.166 lower than those for t_stage T1, while the log odds for t_stage T3 are 0.214 lower than t_stage T1. Similar interpretations apply to other covariates from Table 1. The impact of selected covariates on status is influenced by the interaction with survival month. The 0.88 accuracy suggests correct predictions for a significant portion (88%) of the dataset. Differences in accuracy between race groups hint at slightly better performance in the White group.
+In the survival analysis, Age, T stage, N stage, Regional Node Examined, and Reginol Node Positive had significantly affected the survival of a breast cancer patient. Furthermore, by comparing the predictive accuracy of the final model across race groups, the model exhibited slightly superior predictive performance for White individuals (71.56%) compared to black (67.49%). This observation is further supported by the AUC, where the AUC for black individuals was found to be lower than that for white counterparts.
+After adjusting the model by introducing “weight” parameters associated with the race variable during the model refinement process, analysis of the adjusted model’s accuracy metrics and ROC curves reveal that the augmentation of weights, although leading to an overall decline in the model’s performance, concurrently results in a reduction of the accuracy gap in predicting survival outcomes among individuals of diverse racial backgrounds.
+The decision tree model gives a promising prediction accuracy of 89.19% and it includes survival month, age, differential, and marital status. According to the model in Fig 3, if the individual’s survival month is greater than or equal to 48 months, the probability that the individual will be alive is 89%. If the individual’s survival month is less than 48 months and the individual is less than 56 years old and the Tumor size is less than 16, then the probability of being alive is only 1%. The interpretation in other branches is similar.
+The prediction accuracy of random forest using 11 variables is the most optimal one, with an accuracy of 89.59%. The random forest does not give a model with a parameter but based on the “Mean Decrease Accuracy”, the model uses the following 11 variables to perform the classification: Survival.Months, Reginol.Node.Positive, Progesterone.Status, Age, X6th.Stage, Estrogen.Status, Tumor.Size, N.Stage, Regional.Node.Examined, differentiate and T.Stage. It is worth noting that the importance of variable survival month is much higher than other variables.
+Generally, four models are used to predict the status of breast cancer patients. The prediction accuracy between different methods is shown in Fig6. The performance of the random forest is the best, with an accuracy of 89.59%.  The prediction accuracy of the White and Black Race by different methods is shown in Fig7. The accuracy between different races by the same method does not differ a lot. Therefore, our model is not limited by race type.</p>
+
+
+
+
+<h2 id="reference">Reference
+  <a href="#reference"><svg class="anchor-symbol" aria-hidden="true" height="26" width="26" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="currentColor"></path>
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76.0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71.0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71.0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76.0 5-2.24 5-5s-2.24-5-5-5z"></path>
+    </svg></a>
+</h2>
+<p>[1]	Loibl, Sibylle et al. “Breast cancer.” Lancet (London, England) vol. 397,10286 (2021): 1750-1769. doi:10.1016/S0140-6736(20)32381-3
+[2]	Arnold, Melina et al. “Current and future burden of breast cancer: Global statistics for 2020 and 2040.” Breast (Edinburgh, Scotland) vol. 66 (2022): 15-23. doi:10.1016/j.breast.2022.08.010</p>
+
+        
+        <details closed class="f6 fw7 input-reset">
+  <dl class="f6 lh-copy">
+    <dt class="fw7">Posted on:</dt>
+    <dd class="fw5 ml0">December 11, 2023</dd>
+  </dl>
+  <dl class="f6 lh-copy">
+    <dt class="fw7">Length:</dt>
+    <dd class="fw5 ml0">27 minute read, 5620 words</dd>
+  </dl>
+  
+  
+  
+  <dl class="f6 lh-copy">
+    <dt class="fw7">See Also:</dt>
+    
+  </dl>
+</details>
+
+      </section>
+      <footer class="post-footer">
+        <div class="post-pagination dt w-100 mt4 mb2">
+  
+  
+    <a class="prev dtc pr2 tl v-top fw6"
+    href="http://localhost:4321/project/2024-03-31-covid/">&larr; A Combined Cohort Study to Predict COVID-19 Recovery Time and Identify Risk Factors for Prolonged Recovery</a>
+  
+  
+  
+    <a class="next dtc pl2 tr v-top fw6"
+    href="http://localhost:4321/project/giraffes/">Tachyons for Style &rarr;</a>
+  
+</div>
+
+      </footer>
+    </article>
+    
+  </section>
+</main>
+<footer class="site-footer pv4 bt b--transparent ph5" role="contentinfo">
+  <nav class="db dt-l w-100">
+    <p class="site-copyright f7 db dtc-l v-mid w-100 w-33-l tc tl-l pv2 pv0-l mv0 lh-copy">
+      &copy; 2024 Yueyi Xu
+      <span class="middot-divider"></span>
+      Made with <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title"><a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/hugo-apero/" rel="dct:source">Hugo Apéro</a></span>.
+      <br />
+      
+Based on <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title"><a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/formspree/blogophonic-hugo" rel="dct:source">Blogophonic</a></span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://formspree.io" property="cc:attributionName" rel="cc:attributionURL">Formspree</a>.
+    </p>
+    
+    <div class="site-social-links db dtc-l v-mid w-100 w-33-l tc pv2 pv0-l mv0">
+      <div class="social-icon-links" aria-hidden="true">
+  
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <a class="link dib h1 w1 ml0 mr2 f6 o-90 glow" href="https://github.com/yx2858" title="github" target="_blank" rel="me noopener">
+      <i class="fab fa-github fa-lg fa-fw"></i>
+    </a>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <a class="link dib h1 w1 ml0 mr2 f6 o-90 glow" href="https://www.linkedin.com/in/yueyi-x-537a93100/" title="linkedin" target="_blank" rel="me noopener">
+      <i class="fab fa-linkedin fa-lg fa-fw"></i>
+    </a>
+  
+</div>
+
+    </div>
+    
+    <div class="site-links f6 db dtc-l v-mid w-100 w-67-l tc tr-l pv2 pv0-l mv0">
+      
+      <a class="dib pv1 ph2 link" href="/license/" title="License">License</a>
+      
+      <a class="dib pv1 ph2 link" href="/contact/" title="Contact form">Contact</a>
+      
+    </div>
+  </nav>
+  
+    <script>
+
+    var i, text, code, codes = document.getElementsByTagName('code');
+    for (let i = 0; i < codes.length;) {
+      code = codes[i];
+      if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+        text = code.textContent;
+        if (/^\$[^$]/.test(text) && /[^$]\$$/.test(text)) {
+          text = text.replace(/^\$/, '\\(').replace(/\$$/, '\\)');
+          code.textContent = text;
+        }
+        if (/^\\\((.|\s)+\\\)$/.test(text) ||
+            /^\\\[(.|\s)+\\\]$/.test(text) ||
+            /^\$(.|\s)+\$$/.test(text) ||
+            /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+          code.outerHTML = code.innerHTML;  
+          continue;
+        }
+      }
+      i++;
+    }
+</script>
+
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css" integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js" integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+
+
+    
+  
+  
+</footer>
+
+      </div>
+    </body>
+</html>
